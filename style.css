@@ -1,0 +1,17 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.header {
+    display: flex;
+    justify-content: center;
+    padding: 10px;
+}
+
+#run,
+#save {
+    width: 100px;
+    margin: 0 10px;
+}
