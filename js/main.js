@@ -6,10 +6,10 @@ const output = document.getElementById('output')
 //-------------- DATA --------------
 
 // dates
-const date = new Date()
-const today = date.getDay() - 1
-const currentHours = date.getHours()
-const currentMinutes = date.getMinutes()
+const m = moment()
+const today = m.get('day')
+const currentHours = m.get('hour')
+const currentMinutes = m.get('minute')
 
 const letters = [ 'Ш', 'К', 'Б', 'С', 'П', 'В' ]
 
@@ -22,13 +22,13 @@ const cities = [
 ]
 
 const daysOfWeek = [
+    'Неділя',
     'Понеділок',
     'Вівторок',
     'Середа',
     'Четвер',
     'Пятниця',
-    'Субота',
-    'Неділя'
+    'Субота'
 ]
 
 const distances = [
@@ -66,27 +66,36 @@ const getNumberOfTrains = (userDefinedNOfTrains) => {
 
 class Destination {
     constructor() {
+        //*********** TRAIN N && L ***********
         this.trainNumber = getRandomNum(150, 100)
         this.trainLetter = letters[getRandomItem(letters)]
+
+        //*********** DEPARTURE CITY ***********
         this.cityASelector = getRandomItem(cities)
         this.cityA = cities[this.cityASelector]
         this.avaliableCities = [...cities.filter(city => city !== this.cityA)]
 
+        //*********** ARRIVAL CITY ***********
         this.cityBSelector = getRandomItem(this.avaliableCities)
         this.cityB = this.avaliableCities[this.cityBSelector]
-        // departure time
-        this.hourOfDeparture = getRandomNum(23, currentHours)
-        this.hourOfDepartureFormated = this.hourOfDeparture < 10 ? `0${this.hourOfDeparture}` : this.hourOfDeparture
 
-        this.minuteOfDeparture = getRandomNum(59, currentMinutes + 5)
-        this.minuteOfDepartureFormated = this.minuteOfDeparture < 10 ? `0${this.minuteOfDeparture}` : this.minuteOfDeparture
-
-        this.timeOfDeparture = `${this.hourOfDepartureFormated}:${this.minuteOfDepartureFormated}`
-
+        //*********** DEPARTURE DAY ***********
         // day of week
         this.departureDayRandom = daysOfWeek[getRandomItem(daysOfWeek)]
-        this.departureDayTime = this.departureDayRandom === daysOfWeek[today] ? `Сьогодні` : this.departureDayRandom
+        this.departureDay = this.departureDayRandom === daysOfWeek[today] ? `Сьогодні` : this.departureDayRandom
+        // highlight today's train
         this.departureToday = this.departureDayRandom == daysOfWeek[today]
+
+        //*********** DEPARTURE TIME ***********
+        this.trainsDayTime = moment()
+        // if today, departure time starts from the current time
+        this.departureH = this.departureToday ? this.trainsDayTime.set('hour', getRandomNum(23, currentHours)).get('hour') : this.trainsDayTime.set('hour', getRandomNum(23, 0)).get('hour')
+        this.departureM = this.departureToday ? this.trainsDayTime.set('minute', getRandomNum(59, currentMinutes + 10)).get('minute') : this.trainsDayTime.set('minute', getRandomNum(59, 0)).get('minute')
+        this.departureTime = `${this.departureH < 10 ? '0' + this.departureH : this.departureH}:${this.departureM < 10 ? '0' + this.departureM : this.departureM}`
+
+
+
+        //*********** TICKET PRICE ***********
         // average train speed
         this.averageSpeed = getRandomNum(120, 80)
         // distance to cityB
@@ -97,8 +106,9 @@ class Destination {
         this.ticketPrice = this.commuteTime * 40.251
         this.ticketPriceFormated = this.ticketPrice.toFixed(2)
 
+        //*********** ARRIVAL TIME && DAY ***********
         // arrival time
-        // this.arrivalTime = Math.round(this.commuteTime) +
+        
     }
 }
 
@@ -124,14 +134,10 @@ run.addEventListener('click', () => {
                 <td>${ticket.cityA}</td>
                 <td>${ticket.cityB}</td>
                 <td>${ticket.departureDayRandom}</td>
-                <td>${ticket.departureDayTime} <br> ${ticket.timeOfDeparture} </td>
+                <td>${ticket.departureDay} <br> ${ticket.departureTime} </td>
                 <td>Неділя <br> 16:00</td>
                 <td>${ticket.ticketPriceFormated}</td>
             </tr>
         `
     })
 })
-
-
-
-
