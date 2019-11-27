@@ -5,6 +5,12 @@ const output = document.getElementById('output')
 
 //-------------- DATA --------------
 
+// dates
+const date = new Date()
+const today = date.getDay() - 1
+const currentHours = date.getHours()
+const currentMinutes = date.getMinutes()
+
 const letters = [ 'Ш', 'К', 'Б', 'С', 'П', 'В' ]
 
 const cities = [
@@ -65,12 +71,24 @@ class Destination {
         this.cityA = cityA
         this.avaliableCities = [...cities.filter(city => city !== this.cityA)]
         this.cityB = this.avaliableCities[getRandomItem(this.avaliableCities)]
+        // time
+        this.hourOfDeparture = getRandomNum(23, currentHours)
+        this.hourOfDepartureFormated = this.hourOfDeparture < 10 ? `0${this.hourOfDeparture}` : this.hourOfDeparture
+
+        this.minuteOfDeparture = getRandomNum(59, currentMinutes + 5)
+        this.minuteOfDepartureFormated = this.minuteOfDeparture < 10 ? `0${this.minuteOfDeparture}` : this.minuteOfDeparture
+
+        this.timeOfDeparture = `${this.hourOfDepartureFormated}:${this.minuteOfDepartureFormated}`
+
+        // Day of week
+        this.departureDayRandom = daysOfWeek[getRandomItem(daysOfWeek)]
+        this.departureDayTime = this.departureDayRandom === daysOfWeek[today] ? `Сьогодні` : this.departureDayRandom
+        this.departureToday = this.departureDayRandom == daysOfWeek[today]
+        
     }
 }
 
 //-------------- MAIN LOGIC --------------
-
-const today = new Date().getDay()
 
 run.addEventListener('click', () => {
     output.innerHTML = ''
@@ -87,13 +105,13 @@ run.addEventListener('click', () => {
     
     tikets.forEach(tiket => {
         output.innerHTML += `
-            <tr>
+            <tr class="${tiket.departureToday ? 'bg-info' : ''}">
                 <td>${tiket.trainNumber}${tiket.trainLetter}</td>
                 <td>${tiket.cityA}</td>
                 <td>${tiket.cityB}</td>
-                <td>субота</td>
-                <td>Субота 06:30</td>
-                <td>Неділя 16:00</td>
+                <td>${tiket.departureDayRandom}</td>
+                <td>${tiket.departureDayTime} <br> ${tiket.timeOfDeparture} </td>
+                <td>Неділя <br> 16:00</td>
                 <td>425,00</td>
             </tr>
         `

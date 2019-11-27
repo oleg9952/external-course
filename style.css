@@ -4,10 +4,18 @@
     box-sizing: border-box;
 }
 
+body {
+    background-color: #333;
+}
+
 .header {
     display: flex;
     justify-content: center;
     padding: 10px;
+}
+
+.today {
+    background-color: orange;
 }
 
 #run,
