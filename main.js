@@ -65,13 +65,16 @@ const getNumberOfTrains = (userDefinedNOfTrains) => {
 //-------------- OBJECTS --------------
 
 class Destination {
-    constructor(cityA) {
+    constructor() {
         this.trainNumber = getRandomNum(150, 100)
         this.trainLetter = letters[getRandomItem(letters)]
-        this.cityA = cityA
+        this.cityASelector = getRandomItem(cities)
+        this.cityA = cities[this.cityASelector]
         this.avaliableCities = [...cities.filter(city => city !== this.cityA)]
-        this.cityB = this.avaliableCities[getRandomItem(this.avaliableCities)]
-        // time
+
+        this.cityBSelector = getRandomItem(this.avaliableCities)
+        this.cityB = this.avaliableCities[this.cityBSelector]
+        // departure time
         this.hourOfDeparture = getRandomNum(23, currentHours)
         this.hourOfDepartureFormated = this.hourOfDeparture < 10 ? `0${this.hourOfDeparture}` : this.hourOfDeparture
 
@@ -80,11 +83,22 @@ class Destination {
 
         this.timeOfDeparture = `${this.hourOfDepartureFormated}:${this.minuteOfDepartureFormated}`
 
-        // Day of week
+        // day of week
         this.departureDayRandom = daysOfWeek[getRandomItem(daysOfWeek)]
         this.departureDayTime = this.departureDayRandom === daysOfWeek[today] ? `Сьогодні` : this.departureDayRandom
         this.departureToday = this.departureDayRandom == daysOfWeek[today]
-        
+        // average train speed
+        this.averageSpeed = getRandomNum(120, 80)
+        // distance to cityB
+        this.distanceToCityB = distances[this.cityASelector][this.cityBSelector]
+        // commute time        
+        this.commuteTime = this.distanceToCityB / this.averageSpeed
+        // ticket price
+        this.ticketPrice = this.commuteTime * 40.251
+        this.ticketPriceFormated = this.ticketPrice.toFixed(2)
+
+        // arrival time
+        // this.arrivalTime = Math.round(this.commuteTime) +
     }
 }
 
@@ -95,24 +109,24 @@ run.addEventListener('click', () => {
     // get Avaliable trains
     let numberOfTrainsAvaliable = getNumberOfTrains(prompt('Enter the number of trains...'))
     // array with destinations
-    let tikets = []
-    // create tikets
+    let tickets = []
+    // create tickets
     for(let i = 0; i < numberOfTrainsAvaliable; i++) {
-        let ticket = new Destination(cities[getRandomItem(cities)])
-        tikets.push(ticket)
+        let ticket = new Destination()
+        tickets.push(ticket)
     }
     // forEach/map array to the table
     
-    tikets.forEach(tiket => {
+    tickets.forEach(ticket => {
         output.innerHTML += `
-            <tr class="${tiket.departureToday ? 'bg-info' : ''}">
-                <td>${tiket.trainNumber}${tiket.trainLetter}</td>
-                <td>${tiket.cityA}</td>
-                <td>${tiket.cityB}</td>
-                <td>${tiket.departureDayRandom}</td>
-                <td>${tiket.departureDayTime} <br> ${tiket.timeOfDeparture} </td>
+            <tr class="${ticket.departureToday ? 'bg-info' : ''}">
+                <td>${ticket.trainNumber}${ticket.trainLetter}</td>
+                <td>${ticket.cityA}</td>
+                <td>${ticket.cityB}</td>
+                <td>${ticket.departureDayRandom}</td>
+                <td>${ticket.departureDayTime} <br> ${ticket.timeOfDeparture} </td>
                 <td>Неділя <br> 16:00</td>
-                <td>425,00</td>
+                <td>${ticket.ticketPriceFormated}</td>
             </tr>
         `
     })
