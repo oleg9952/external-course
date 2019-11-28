@@ -2,6 +2,7 @@
 
 const run = document.getElementById('run')
 const output = document.getElementById('output')
+const spinner = document.querySelector('.sk-circle')
 
 //-------------- DATA --------------
 
@@ -123,17 +124,15 @@ class Destination {
     }
 }
 
-//-------------- MAIN LOGIC --------------
+//-------------- EXECUTION LOGIC --------------
 
-run.addEventListener('click', () => {
+const generateTable = (nOfTrains) => {
     // clear table
     output.innerHTML = ''
-    // get avaliable trains
-    let numberOfTrainsAvaliable = getNumberOfTrains(prompt('Enter the number of trains...'))
     // array with tickets
     let tickets = []
     // create tickets
-    for(let i = 0; i < numberOfTrainsAvaliable; i++) {
+    for(let i = 0; i < nOfTrains; i++) {
         let ticket = new Destination()
         tickets.push(ticket)
     }
@@ -151,4 +150,37 @@ run.addEventListener('click', () => {
             </tr>
         `
     })
+}
+
+// emulating server request
+const requestTickets = numberOfTrains => {
+    output.innerHTML = ''
+    spinner.classList.add('active')
+    let serverStatus = true
+    let proccessingTime = 0
+    if(numberOfTrains < 50) {
+        proccessingTime = 1000
+    } else if(numberOfTrains >= 50 && numberOfTrains < 100) {
+        proccessingTime = 2000
+    } else {
+        proccessingTime = 5000
+    }
+
+    return new Promise((resolve, reject) => setTimeout(() => {
+        if(serverStatus) {
+            resolve(numberOfTrains)
+        } else {
+            reject('Server is not responding')
+        }
+    }, proccessingTime))
+}
+
+run.addEventListener('click', () => {
+    let numberOfTrainsAvaliable = getNumberOfTrains(prompt('Enter the number of trains...'))
+    requestTickets(numberOfTrainsAvaliable)
+        .then(nOfTrains => {
+            spinner.classList.remove('active')
+            generateTable(nOfTrains)
+        }) 
+        .catch(error => console.error(error))
 })
