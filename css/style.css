@@ -20,6 +20,28 @@ body {
     margin: 0 10px;
 }
 
+/* ------------ TABLE ANIMATION ------------ */
+
+#table-uk {
+  visibility: hidden;
+}
+#table-uk.active {
+  visibility: visible;
+}
+
+.ticket {
+  animation: fadeIn 300ms forwards;
+  opacity: 0;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
 
 /* ------------ SPINNER ------------ */
 
@@ -148,3 +170,6 @@ body {
             transform: scale(1);
   }
 }
+
+/* ------------ TABLE ANIMATION ------------ */
+

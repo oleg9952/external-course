@@ -1,8 +1,15 @@
+// preferred language
+let eng = false
+
 //-------------- DOM --------------
 
 const run = document.getElementById('run')
 const output = document.getElementById('output')
 const spinner = document.querySelector('.sk-circle')
+
+const ukTable = document.querySelector('#table-uk')
+// const enTable
+// let languageSelector
 
 //-------------- DATA --------------
 
@@ -136,10 +143,16 @@ const generateTable = (nOfTrains) => {
         let ticket = new Destination()
         tickets.push(ticket)
     }
+    // animation delay counter
+    let animDelay = 0
     // render all tickets    
     tickets.forEach(ticket => {
+        // increment delay
+        animDelay += 40
         output.innerHTML += `
-            <tr class="${ticket.departureToday ? 'bg-info' : ''}">
+            <tr class="ticket ${ticket.departureToday ? 'bg-info' : ''}"
+                style="animation-delay: ${animDelay}ms"
+            >
                 <td>${ticket.trainNumber}${ticket.trainLetter}</td>
                 <td>${ticket.cityA}</td>
                 <td>${ticket.cityB}</td>
@@ -150,6 +163,7 @@ const generateTable = (nOfTrains) => {
             </tr>
         `
     })
+    ukTable.classList.add('active')
 }
 
 // emulating server request
@@ -176,6 +190,7 @@ const requestTickets = numberOfTrains => {
 }
 
 run.addEventListener('click', () => {
+    ukTable.classList.remove('active')
     let numberOfTrainsAvaliable = getNumberOfTrains(prompt('Enter the number of trains...'))
     requestTickets(numberOfTrainsAvaliable)
         .then(nOfTrains => {
