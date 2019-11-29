@@ -22,10 +22,10 @@ body {
 
 /* ------------ TABLE ANIMATION ------------ */
 
-#table-uk {
+.table {
   visibility: hidden;
 }
-#table-uk.active {
+.table.active {
   visibility: visible;
 }
 
@@ -41,6 +41,16 @@ body {
   to {
     opacity: 1;
   }
+}
+
+/* ------------ MODAL ------------ */
+
+.input-group {
+  margin-bottom: 10px;
+}
+
+.language-selection {
+  text-align: center;
 }
 
 /* ------------ SPINNER ------------ */
