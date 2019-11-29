@@ -186,8 +186,8 @@ class Destination {
         // arrival day
         this.arrivalDay = this.currentLanguage !== 'uk' ?
                         this.departureToday && (today + 1) === this.trainsDayTime.get('day') ?
-                        'Завтра' : this.departureToday && today === this.trainsDayTime.get('day') ?
-                        'Сьогодні' : daysOfWeek.en[this.trainsDayTime.get('day')] :
+                        'Tomorrow' : this.departureToday && today === this.trainsDayTime.get('day') ?
+                        'Today' : daysOfWeek.en[this.trainsDayTime.get('day')] :
                         this.departureToday && (today + 1) === this.trainsDayTime.get('day') ?
                         'Завтра' : this.departureToday && today === this.trainsDayTime.get('day') ?
                         'Сьогодні' : daysOfWeek.uk[this.trainsDayTime.get('day')]
