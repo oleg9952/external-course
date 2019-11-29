@@ -1,7 +1,6 @@
 //-------------- DOM --------------
 const output = document.getElementById('output')
 const spinner = document.querySelector('.sk-circle')
-const header = document.querySelector('.header')
 
 let userInput = document.querySelector('#user-input')
 const modalBtns = document.querySelector('.modal-footer')
@@ -16,6 +15,7 @@ const tableHead = document.querySelector('.table-head')
 
 //-------------- LANGUAGE --------------
 
+//set default checkbox state
 languageToggle.checked = localStorage.getItem('language') === null || localStorage.getItem('language') === 'uk' ? true : false
 
 const languageHead = {
@@ -277,15 +277,6 @@ const executeApp = (nOfTrains) => {
         .catch(error => console.error(error))
 }
 
-// listen to click events
-header.addEventListener('click', e => {
-    if(e.target.id === 'run') {
-        
-    } else {
-        localStorage.clear()
-    }
-})
-
 const changeLanguage = () => {
     let currentLanguage = localStorage.getItem('language')
     if(currentLanguage === null || currentLanguage === 'uk') {
@@ -301,7 +292,11 @@ modalBtns.addEventListener('click', e => {
         executeApp(getNumberOfTrains(null))
     } else {
         e.preventDefault()
-        executeApp(userInput.value)
+        if(userInput.value > 100) {
+            alert("You've exceeded the maximum number of trains! Enter a number which is below or equal 100")
+        } else {
+            executeApp(userInput.value)
+        }  
     }
     userInput.value = null
 })
