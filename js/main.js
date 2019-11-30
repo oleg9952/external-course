@@ -192,12 +192,12 @@ class Destination {
                         '0' + this.trainsDayTime.get('minute') : this.trainsDayTime.get('minute')}`
         // arrival day
         this.arrivalDay = this.currentLanguage !== 'uk' ?
-                        this.departureToday && (today + 1) === this.trainsDayTime.get('day') ?
+                        this.departureToday && ((today + 1) === 7 ? 0 : (today + 1)) === this.trainsDayTime.get('day') ?
                         'Tomorrow' : this.departureToday && today === this.trainsDayTime.get('day') ?
                         'Today' : daysOfWeek.en[this.trainsDayTime.get('day')] :
-                        this.departureToday && (today + 1) === this.trainsDayTime.get('day') ?
+                        this.departureToday && ((today + 1) === 7 ? 0 : (today + 1)) === this.trainsDayTime.get('day') ?
                         'Завтра' : this.departureToday && today === this.trainsDayTime.get('day') ?
-                        'Сьогодні' : daysOfWeek.uk[this.trainsDayTime.get('day')]
+                        'Сьогодні' : daysOfWeek.uk[this.trainsDayTime.get('day')] 
     }
 }
 
@@ -299,30 +299,13 @@ const changeLanguage = () => {
     }
 }
 
-// modal btns events
-modalBtns.addEventListener('click', e => {
-    if(e.target.id === 'cancel') {
-        executeApp(getNumberOfTrains(null))
-    } else {
-        e.preventDefault()
-        if(userInput.value > 100) {
-            alert("You've exceeded the maximum number of trains! Enter a number which is below or equal 100")
-        } else if(userInput.value === '' || userInput.value < 1) {
-            alert("You forgot to enter the number of trains!")
-        } else {
-            executeApp(userInput.value)
-        }  
-    }
-    userInput.value = null
-})
-
 // save generated schedule to a TXT file
 saveBtn.addEventListener('click', () => {
     let data = []
     let language = tickets[0].engTest
     let date = `${m.get('date')}.${m.get('month')}.${m.get('year')}`
     let counter = 0
-    let fileName = language ? `Schedule_UK_${date}.txt` : `Schedule_EN_${date}.txt`
+    let fileName = language ? `Розклад_${date}.txt` : `Schedule_${date}.txt`
 
     // language defined descriptions
     let departure = language ? 'Відправлення:' : 'Departure:'
@@ -339,3 +322,21 @@ saveBtn.addEventListener('click', () => {
 
     saveToFile(fileName , modified)
 })
+
+// modal btns events
+modalBtns.addEventListener('click', e => {
+    if(e.target.id === 'cancel') {
+        executeApp(getNumberOfTrains(null))
+    } else if(e.target.id === 'get_schedule') {
+        e.preventDefault()
+        if(userInput.value > 100) {
+            alert("You've exceeded the maximum number of trains! Enter a number which is below or equal 100")
+        } else if(userInput.value === '' || userInput.value < 1) {
+            alert("You forgot to enter the number of trains!")
+        } else {
+            executeApp(userInput.value)
+        }  
+    }
+    userInput.value = null
+})
+
