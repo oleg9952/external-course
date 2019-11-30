@@ -2,16 +2,14 @@
 const output = document.getElementById('output')
 const spinner = document.querySelector('.sk-circle')
 
-let userInput = document.querySelector('#user-input')
+const userInput = document.querySelector('#user-input')
 const modalBtns = document.querySelector('.modal-footer')
+const saveBtn = document.querySelector('#save')
 
 const languageToggle = document.querySelector('#language')
 
 const table = document.querySelector('.table')
 const tableHead = document.querySelector('.table-head')
-// const enTable
-// let languageSelector
-
 
 //-------------- LANGUAGE --------------
 
@@ -36,13 +34,12 @@ const languageHead = {
             <th scope="col">City of Departure</th>
             <th scope="col">City of Arrival</th>
             <th scope="col">Day</th>
-            <th scope="col">Dep Day/Time</th>
-            <th scope="col">Arr Day/Time</th>
+            <th scope="col">Dep. Day/Time</th>
+            <th scope="col">Arr. Day/Time</th>
             <th scope="col">Price</th>
         </tr>
     `
 }
-
 
 //-------------- DATA --------------
 
@@ -100,7 +97,7 @@ const distances = [
     [653, 432, 296, 632]
 ]
 
-//-------------- PURE FUNCTIONS --------------
+//-------------- FUNCTIONS --------------
 
 const getRandomItem = (item) => {
     let random = Math.floor(Math.random() * item.length)
@@ -123,7 +120,17 @@ const getNumberOfTrains = (userDefinedNOfTrains) => {
     return userDefinedNOfTrains !== null ? Number(userDefinedNOfTrains) : defaultNTrains
 }
 
-//-------------- OBJECTS --------------
+const saveToFile = (fileName, data) => {
+    let element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(data));
+    element.setAttribute('download', fileName);
+    element.style.display = 'none';
+    document.body.appendChild(element);
+    element.click();
+    document.body.removeChild(element);
+}
+
+//-------------- OBJECT --------------
 
 class Destination {
     constructor(language) {
@@ -196,7 +203,13 @@ class Destination {
 
 //-------------- EXECUTION LOGIC --------------
 
+// saveBtn.disabled = true
+let tickets = []
+
+
 const generateTable = (nOfTrains) => {
+    // empty tickets array
+    tickets = []
     // save default language to LocalStorage
     if(localStorage.getItem('language') === null) {
         localStorage.setItem('language', 'uk')
@@ -205,7 +218,7 @@ const generateTable = (nOfTrains) => {
     // clear table
     output.innerHTML = ''
     // array with tickets
-    let tickets = []
+
     // create tickets
     for(let i = 0; i < nOfTrains; i++) {
         let ticket = new Destination(language)
@@ -213,7 +226,6 @@ const generateTable = (nOfTrains) => {
     }
     // animation delay counter
     let animDelay = 0
-      
     // display en or uk table heading
     if(language === 'uk') {
         tableHead.innerHTML = languageHead.uk
@@ -266,17 +278,18 @@ const requestTickets = numberOfTrains => {
     }, proccessingTime))
 }
 
-// run the program
 const executeApp = (nOfTrains) => {
     table.classList.remove('active')
     requestTickets(nOfTrains)
         .then(nOfTrains => {
             spinner.classList.remove('active')
             generateTable(nOfTrains)
+            saveBtn.disabled = false
         }) 
         .catch(error => console.error(error))
 }
 
+// change language of schedule on btn toggle
 const changeLanguage = () => {
     let currentLanguage = localStorage.getItem('language')
     if(currentLanguage === null || currentLanguage === 'uk') {
@@ -286,7 +299,7 @@ const changeLanguage = () => {
     }
 }
 
-
+// modal btns events
 modalBtns.addEventListener('click', e => {
     if(e.target.id === 'cancel') {
         executeApp(getNumberOfTrains(null))
@@ -294,9 +307,35 @@ modalBtns.addEventListener('click', e => {
         e.preventDefault()
         if(userInput.value > 100) {
             alert("You've exceeded the maximum number of trains! Enter a number which is below or equal 100")
+        } else if(userInput.value === '' || userInput.value < 1) {
+            alert("You forgot to enter the number of trains!")
         } else {
             executeApp(userInput.value)
         }  
     }
     userInput.value = null
+})
+
+// save generated schedule to a TXT file
+saveBtn.addEventListener('click', () => {
+    let data = []
+    let language = tickets[0].engTest
+    let date = `${m.get('date')}.${m.get('month')}.${m.get('year')}`
+    let counter = 0
+    let fileName = language ? `Schedule_UK_${date}.txt` : `Schedule_EN_${date}.txt`
+
+    // language defined descriptions
+    let departure = language ? 'Відправлення:' : 'Departure:'
+    let arrival = language ? 'Прибуття:' : 'Arrival:'
+    let price = language ? 'Ціна:' : 'Price:'
+
+    tickets.forEach(ticket => {
+        counter++
+        let record = `${counter}. ${ticket.trainNumber}${ticket.trainLetter} - ${ticket.cityA} - ${ticket.cityB} - ${departure} ${ticket.departureDay} ${ticket.departureTime} - ${arrival} ${ticket.arrivalDay} ${ticket.arrivalTime} - ${price} ${ticket.ticketPriceFormated}`
+        data.push(record)
+    })
+
+    let modified = JSON.stringify(data, null, " ").replace(/]|[[]|[,'"]+/g, '')
+
+    saveToFile(fileName , modified)
 })
