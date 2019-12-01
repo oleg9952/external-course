@@ -202,10 +202,8 @@ class Destination {
 }
 
 //-------------- EXECUTION LOGIC --------------
-
-// saveBtn.disabled = true
+// array with tickets
 let tickets = []
-
 
 const generateTable = (nOfTrains) => {
     // empty tickets array
@@ -215,23 +213,19 @@ const generateTable = (nOfTrains) => {
         localStorage.setItem('language', 'uk')
     }
     let language = localStorage.getItem('language')
-    // clear table
-    output.innerHTML = ''
-    // array with tickets
-
     // create tickets
     for(let i = 0; i < nOfTrains; i++) {
         let ticket = new Destination(language)
         tickets.push(ticket)
     }
-    // animation delay counter
-    let animDelay = 0
     // display en or uk table heading
     if(language === 'uk') {
         tableHead.innerHTML = languageHead.uk
     } else {
         tableHead.innerHTML = languageHead.en
     }
+    // animation delay counter
+    let animDelay = 0
     // render all tickets 
     tickets.forEach(ticket => {
         // increment delay
@@ -259,14 +253,14 @@ const requestTickets = numberOfTrains => {
     spinner.classList.add('active')
 
     let serverStatus = true
-    let proccessingTime = 0
+    let processingTime = 0
 
     if(numberOfTrains < 50) {
-        proccessingTime = 1000
+        processingTime = 1000
     } else if(numberOfTrains >= 50 && numberOfTrains < 100) {
-        proccessingTime = 2000
+        processingTime = 2000
     } else {
-        proccessingTime = 5000
+        processingTime = 5000
     }
 
     return new Promise((resolve, reject) => setTimeout(() => {
@@ -275,7 +269,7 @@ const requestTickets = numberOfTrains => {
         } else {
             reject('Server is not responding')
         }
-    }, proccessingTime))
+    }, processingTime))
 }
 
 const executeApp = (nOfTrains) => {
