@@ -138,6 +138,7 @@ class Destination {
     constructor(language) {
         // initiate current distination's time
         this.trainsDayTime = moment()
+        this.timeNowMilliseconds = this.trainsDayTime.unix()
 
         //*********** LANGUAGE ***********
         this.currentLanguage = language
@@ -170,10 +171,15 @@ class Destination {
         //*********** DEPARTURE TIME ***********
         // if today, departure time starts from the current time
         this.departureH = this.departureToday ?
-                        this.trainsDayTime.set('hour', getRandomNum(23, currentHours)).get('hour') : this.trainsDayTime.set('hour', getRandomNum(23, 0)).get('hour')
+                        this.trainsDayTime.set('hour', getRandomNum(24, currentHours)).get('hour') : this.trainsDayTime.set('hour', getRandomNum(24, 0)).get('hour')
         this.departureM = this.departureToday ?
                         this.trainsDayTime.set('minute', getRandomNum(59, currentMinutes + 10)).get('minute') : this.trainsDayTime.set('minute', getRandomNum(59, 0)).get('minute')
         this.departureTime = `${this.departureH < 10 ? '0' + this.departureH : this.departureH}:${this.departureM < 10 ? '0' + this.departureM : this.departureM}`
+
+        // units for timer
+        this.departureMilliseconds = this.trainsDayTime.unix()
+        this.diffTime = this.departureMilliseconds - this.timeNowMilliseconds
+        this.durationTime = moment.duration(this.diffTime * 1000, 'milliseconds')
 
         //*********** TICKET'S PRICE ***********
         // average train speed
@@ -202,13 +208,28 @@ class Destination {
                         'Завтра' : this.departureToday && today === this.trainsDayTime.get('day') ?
                         'Сьогодні' : daysOfWeek.uk[this.trainsDayTime.get('day')] 
     }
+    // display remaining time till departure
+    timer() {
+        this.durationTime = moment.duration(this.durationTime - 1000, 'milliseconds')
+
+        let day = this.durationTime.get('day') < 10 ? '0' + this.durationTime.get('day') : this.durationTime.get('day')
+        let hour = this.durationTime.get('hour') < 10 ? '0' + this.durationTime.get('hour') : this.durationTime.get('hour')
+        let minute = this.durationTime.get('minute') < 10 ? '0' + this.durationTime.get('minute') : this.durationTime.get('minute')
+        let second = this.durationTime.get('second') < 10 ? '0' + this.durationTime.get('second') : this.durationTime.get('second')
+
+        return `${day} ${hour}:${minute}:${second}`
+    }
 }
 
 //-------------- EXECUTION LOGIC --------------
 // array with tickets
 let tickets = []
 
+let displayTimer
+
 const generateTable = (nOfTrains) => {
+    // reset timer
+    clearInterval(displayTimer)
     // empty tickets array
     tickets = []
     // save default language to LocalStorage
@@ -241,7 +262,7 @@ const generateTable = (nOfTrains) => {
                 <td>${ticket.cityA}</td>
                 <td>${ticket.cityB}</td>
                 <td>${ticket.departureDayOfWeek}</td>
-                <td class="timer">timer</td>
+                <td class="timer">...</td>
                 <td>${ticket.departureDay} <br> ${ticket.departureTime} </td>
                 <td>${ticket.arrivalDay} <br> ${ticket.arrivalTime}</td>
                 <td>${ticket.ticketPriceFormated}</td>
@@ -249,34 +270,18 @@ const generateTable = (nOfTrains) => {
         `
     })
 
-
     //*********** TIMER ***********
-    let timeNow = m.unix()
-
-    let ticketsDom = Array.from(document.getElementsByClassName('timer'))
-    let departureTime = []
-
-    let depTime = moment()
-    for(let i = 0; i < tickets.length; i++) {
-        
-        depTime.add(tickets[i].departureH, 'h')
-        depTime.set(tickets[i].departureM, 'm')
-        departureTime.push(depTime.unix())
-    }
-
-    let diffTime = departureTime[0] - timeNow
-    let duration = moment.duration(diffTime * 1000, 'milliseconds')
-
-    setInterval(() => {
-            duration = moment.duration(duration - 1000, 'milliseconds')
-            ticketsDom[0].innerHTML = `${duration.get('day')} ${duration.hours()}:${duration.minutes()}:${duration.seconds()}s`
-    }, 1000)
+    let timerOutput = Array.from(document.getElementsByClassName('timer'))
     
-    console.log(tickets[0].setDepartureDay)
-    console.log(depTime.get('day'))
+    displayTimer = setInterval(() => {
+        tickets.forEach((item, index) => {
+            timerOutput[index].innerText = item.timer()
+        })
+    }, 1000)
 
     //**********************
 
+    // show table
     table.classList.add('active')
 }
 
@@ -291,7 +296,7 @@ const requestTickets = numberOfTrains => {
     if(numberOfTrains < 50) {
         processingTime = 1000
     } else if(numberOfTrains >= 50 && numberOfTrains < 100) {
-        processingTime = 2000
+        processingTime = 3000
     } else {
         processingTime = 5000
     }
@@ -344,7 +349,7 @@ saveBtn.addEventListener('click', () => {
         let record = `${counter}. ${ticket.trainNumber}${ticket.trainLetter} - ${ticket.cityA} - ${ticket.cityB} - ${departure} ${ticket.departureDay} ${ticket.departureTime} - ${arrival} ${ticket.arrivalDay} ${ticket.arrivalTime} - ${price} ${ticket.ticketPriceFormated}`
         data.push(record)
     })
-
+    // add spaces && replace '"
     let modified = JSON.stringify(data, null, " ").replace(/]|[[]|[,'"]+/g, '')
 
     saveToFile(fileName , modified)
