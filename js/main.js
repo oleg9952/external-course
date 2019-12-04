@@ -23,6 +23,7 @@ const languageHead = {
             <th scope="col">Пункт відправлення</th>
             <th scope="col">Пункт прибуття</th>
             <th scope="col">День тижня</th>
+            <th scope="col">До відправлення</th>
             <th scope="col">Відправлення</th>
             <th scope="col">Прибуття</th>
             <th scope="col">Вартість</th>
@@ -34,6 +35,7 @@ const languageHead = {
             <th scope="col">City of Departure</th>
             <th scope="col">City of Arrival</th>
             <th scope="col">Day</th>
+            <th scope="col">Till departure</th>
             <th scope="col">Dep. Day/Time</th>
             <th scope="col">Arr. Day/Time</th>
             <th scope="col">Price</th>
@@ -156,7 +158,8 @@ class Destination {
 
         //*********** DEPARTURE DAY ***********
         // day of week
-        this.setDepartureDay = this.currentLanguage !== 'uk' ? this.trainsDayTime.set('day', getRandomItem(daysOfWeek.en)).get('day') : this.trainsDayTime.set('day', getRandomItem(daysOfWeek.uk)).get('day')
+        // this.addRundomNumOfDays = this.trainsDayTime.add(getRandomNum(1), 'd')
+        this.setDepartureDay = this.currentLanguage !== 'uk' ? this.trainsDayTime.add(getRandomNum(6), 'd').get('day') : this.trainsDayTime.add(getRandomNum(6), 'd').get('day')
         this.departureDayOfWeek = this.currentLanguage !== 'uk' ? daysOfWeek.en[this.setDepartureDay] : daysOfWeek.uk[this.setDepartureDay]
         this.departureDay = this.currentLanguage !== 'uk' ?
                             daysOfWeek.en[this.setDepartureDay] === daysOfWeek.en[today] ? 'Today' : daysOfWeek.en[this.setDepartureDay] :
@@ -238,12 +241,42 @@ const generateTable = (nOfTrains) => {
                 <td>${ticket.cityA}</td>
                 <td>${ticket.cityB}</td>
                 <td>${ticket.departureDayOfWeek}</td>
+                <td class="timer">timer</td>
                 <td>${ticket.departureDay} <br> ${ticket.departureTime} </td>
                 <td>${ticket.arrivalDay} <br> ${ticket.arrivalTime}</td>
                 <td>${ticket.ticketPriceFormated}</td>
             </tr>
         `
     })
+
+
+    //*********** TIMER ***********
+    let timeNow = m.unix()
+
+    let ticketsDom = Array.from(document.getElementsByClassName('timer'))
+    let departureTime = []
+
+    let depTime = moment()
+    for(let i = 0; i < tickets.length; i++) {
+        
+        depTime.add(tickets[i].departureH, 'h')
+        depTime.set(tickets[i].departureM, 'm')
+        departureTime.push(depTime.unix())
+    }
+
+    let diffTime = departureTime[0] - timeNow
+    let duration = moment.duration(diffTime * 1000, 'milliseconds')
+
+    setInterval(() => {
+            duration = moment.duration(duration - 1000, 'milliseconds')
+            ticketsDom[0].innerHTML = `${duration.get('day')} ${duration.hours()}:${duration.minutes()}:${duration.seconds()}s`
+    }, 1000)
+    
+    console.log(tickets[0].setDepartureDay)
+    console.log(depTime.get('day'))
+
+    //**********************
+
     table.classList.add('active')
 }
 
