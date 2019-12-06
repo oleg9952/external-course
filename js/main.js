@@ -228,8 +228,6 @@ let tickets = []
 let displayTimer
 
 const generateTable = (nOfTrains) => {
-    // reset timer
-    clearInterval(displayTimer)
     // empty tickets array
     tickets = []
     // save default language to LocalStorage
@@ -271,8 +269,11 @@ const generateTable = (nOfTrains) => {
     })
 
     //*********** TIMER ***********
-    let timerOutput = Array.from(document.getElementsByClassName('timer'))
     
+    let timerOutput = Array.from(document.getElementsByClassName('timer'))
+    // reset timer
+    clearInterval(displayTimer)
+    // start timer
     displayTimer = setInterval(() => {
         tickets.forEach((item, index) => {
             timerOutput[index].innerText = item.timer()
@@ -335,7 +336,7 @@ const changeLanguage = () => {
 saveBtn.addEventListener('click', () => {
     let data = []
     let language = tickets[0].engTest
-    let date = `${m.get('date')}.${m.get('month')}.${m.get('year')}`
+    let date = `${m.get('date') < 10 ? '0' + m.get('date') : m.get('date')}.${m.get('month')}.${m.get('year')}`
     let counter = 0
     let fileName = language ? `Розклад_${date}.txt` : `Schedule_${date}.txt`
 
@@ -357,11 +358,13 @@ saveBtn.addEventListener('click', () => {
 
 // modal btns events
 modalBtns.addEventListener('click', e => {
+    e.preventDefault()
     if(e.target.id === 'cancel') {
         executeApp(getNumberOfTrains(null))
     } else if(e.target.id === 'get_schedule') {
-        e.preventDefault()
-        if(userInput.value > 100) {
+        if(!userInput.value.match(/^[0-9]+$/) && userInput.value.length !== 0) {
+            alert('Only digits are allowed!')
+        } else if(userInput.value > 100) {
             alert("You've exceeded the maximum number of trains! Enter a number which is below or equal 100")
         } else if(userInput.value === '' || userInput.value < 1) {
             alert("You forgot to enter the number of trains!")
