@@ -69,7 +69,7 @@ var user = new User('Alex', 'Brand');
 console.group('%c User', style);
 console.log(
     user, 
-    // user.createSimpleTask('User simple task', 'open')
+    user.createSimpleTask('User simple task', 'open')
 );
 console.groupEnd();
 console.log('-----------------------------')
