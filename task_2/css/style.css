@@ -55,6 +55,9 @@ h2 {
     font-size: 18px;
     outline: none;
 }
+.user_inputs input.disabled {
+    background-color: #dcdcdc;
+}
 .user_inputs input:focus,
 #user_type:focus {
     border: 3px solid #6dccff;
@@ -65,6 +68,16 @@ h2 {
     border: 3px solid #7e7e7e;
     font-size: 18px;
     outline: none;
+    margin-bottom: 20px;
+}
+
+button {
+    display: block;
+    padding: 10px 30px;
+    font-size: 18px;
+    border: 3px solid #7e7e7e;
+    outline: none;
+    cursor: pointer;
 }
 
 
