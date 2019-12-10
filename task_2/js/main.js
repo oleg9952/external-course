@@ -15,7 +15,7 @@ if(userType.value === 'user') {
     jobTitle.classList.add('disabled');
 }
 
-userType.addEventListener('change', () => {
+userType.addEventListener('change', function() {
     var value = userType.value
     if(value === 'user') {
         specialization.disabled = true;
@@ -57,7 +57,7 @@ function Developer(name, surname, specialization, jobTitle) {
 
 //********** EXECUTION **********
 
-formUser.addEventListener('submit', (e) => {
+formUser.addEventListener('submit', function(e) {
     e.preventDefault();
     var type = userType.value;
     var createdUser = '';
