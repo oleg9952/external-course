@@ -3,26 +3,16 @@
 function User(name, surname) {
     this.name = name;
     this.surname = surname;
-    this.createSimpleTask = function(title, status) {
-        return new SimpleTask(title, status)
-    }
 }
-
 
 function Student(name, surname, specialization) {
     User.call(this, name, surname);
     this.specialization = specialization;
-    this.createHomeTask = function(title, status, description) {
-        return new HomeTask(title, status, description);
-    }
 }
 
 function Developer(name, surname, specialization, jobTitle) {
     Student.call(this, name, surname, specialization);
     this.jobTitle = jobTitle;
-    this.createProjcetTask = function(title, status, description, deadline) {
-        return new ProjectTask(title, status, description, deadline);
-    }
 }
 
 //********** TASKS CONSTRUCTORS **********
@@ -42,6 +32,26 @@ function ProjectTask(title, status, description, deadline) {
     this.deadline = deadline;
 }
 
+//********** METHODS **********
+
+Student.prototype = Object.create(User.prototype)
+Student.prototype.constructor = Student
+
+Developer.prototype = Object.create(Student.prototype)
+Developer.prototype.constructor = Developer
+
+User.prototype.createSimpleTask = function(title, status) {
+    return new SimpleTask(title, status)
+}
+
+Student.prototype.createHomeTask = function(title, status, description) {
+    return new HomeTask(title, status, description);
+}
+
+Developer.prototype.createProjcetTask = function(title, status, description, deadline) {
+    return new ProjectTask(title, status, description, deadline);
+}
+
 //********** TASKS CONSTRUCTORS **********
 
 var style = [
@@ -59,7 +69,7 @@ var user = new User('Alex', 'Brand');
 console.group('%c User', style);
 console.log(
     user, 
-    user.createSimpleTask('User simple task', 'open')
+    // user.createSimpleTask('User simple task', 'open')
 );
 console.groupEnd();
 console.log('-----------------------------')
