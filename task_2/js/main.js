@@ -60,7 +60,7 @@ function Developer(name, surname, specialization, jobTitle) {
 formUser.addEventListener('submit', function(e) {
     e.preventDefault();
     var type = userType.value;
-    var createdUser = '';
+    var createdUser;
 
     if(type === 'user') {
         createdUser = new User(userName.value, userSurname.value);
@@ -74,7 +74,6 @@ formUser.addEventListener('submit', function(e) {
     }
 
     console.log(createdUser);
-    createdUser = '';
     userName.value = '';
     userSurname.value = '';
 })
