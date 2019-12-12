@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>TODO || Task 3</title>
+    <link rel="stylesheet" href="./css/style.css">
+</head>
+<body>
+    
+    <div class="wrapper">
+        <header>
+            <h1>Welcome</h1>
+        </header>
+        <div class="content">
+            <form class="user_block" id="form_user">
+                <h2>Create user</h2>
+                <div class="user_inputs">
+                    <input type="text" name="name" id="name" placeholder="Name">
+                    <input type="text" name="surname" id="surname" placeholder="Surname">
+                    <input type="text" name="specialization" id="specialization" placeholder="specialization">
+                    <input type="text" name="jobTitle" id="job_title" placeholder="job title">
+                </div>
+                <select id="user_type">
+                    <option value="user">User</option>
+                    <option value="student">Student</option>
+                    <option value="developer">Developer</option>
+                </select>
+                <button type="submit">Create</button>
+            </form>
+            <div class="tasks_block">
+                <div class="tabs">
+                    <div class="tab_item active">Simple task</div>
+                    <div class="tab_item">Home task</div>
+                    <div class="tab_item">Project task</div>
+                </div>
+                <div class="forms_holder">
+                    <form id="simple_task" class="task_form active">
+                        <div class="top_inputs">
+                            <input type="text" name="title_simple" id="title_simple" placeholder="Title">
+                            <input type="text" name="status_simple" id="status_simple" placeholder="Status">
+                        </div>
+                        <button type="submit" class="add_task">Add task</button>
+                    </form>
+                    <form id="home_task" class="task_form">
+                        <div class="top_inputs">
+                            <input type="text" name="title_home" id="title_home" placeholder="Title">
+                            <input type="text" name="status_home" id="status_home" placeholder="Status">
+                        </div>
+                        <textarea name="description" id="description_home" placeholder="Description here"></textarea>
+                        <button type="submit" class="add_task">Add task</button>
+                    </form>
+                    <form id="project_task" class="task_form">
+                        <div class="top_inputs">
+                            <input type="text" name="title_project" id="title_project" placeholder="Title">
+                            <input type="text" name="status_project" id="status_project" placeholder="Status">
+                        </div>
+                        <textarea name="description" id="description_project" placeholder="Description here"></textarea>
+                        <select name="deadline" id="deadline">
+                            <option value="monday">Monday</option>
+                            <option value="tuesday">Tuesday</option>
+                            <option value="wednesday">Wednesday</option>
+                            <option value="thursday">Thursday</option>
+                            <option value="friday">Friday</option>
+                        </select>
+                        <button type="submit" class="add_task">Add task</button>
+                    </form>
+                </div>
+            </div>
+            
+        </div>
+    </div>
+    <footer>
+        <h1>footer</h1>
+    </footer>
+
+    <script src="./js/main.js"></script>
+</body>
+</html>
