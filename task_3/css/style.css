@@ -58,6 +58,7 @@ h2 {
     border: 3px solid #7e7e7e;
     font-size: 18px;
     outline: none;
+    transition: .5s;
 }
 .user_inputs input.disabled {
     background-color: #dcdcdc;
