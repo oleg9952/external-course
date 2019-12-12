@@ -163,16 +163,15 @@ taskForm[0].addEventListener('submit', function(e) {
     var inputs = [title, status];
 
     if(currentUser !== undefined) {
-        if(
-            currentUser.constructor.name === 'User' ||
-            currentUser.constructor.name === 'Student' ||
-            currentUser.constructor.name === 'Developer'
-        ) {
+        try {
             if(title.value === '' || status.value === '') {
                 alert('Fill in all the fields first!')
                 return
             }
             console.log(currentUser.createSimpleTask(title.value, status.value))
+        } catch (error) {
+            alert(`${currentUser.constructor.name}s don't have permission to create this type of task!`)
+            console.error(error)
         }
     } else {
         alert('You forgot to create user')
@@ -194,17 +193,15 @@ taskForm[1].addEventListener('submit', function(e) {
     var inputs = [title, status, description];
 
     if(currentUser !== undefined) {
-        if(
-            currentUser.constructor.name === 'Student' ||
-            currentUser.constructor.name === 'Developer'
-        ) {
+        try {
             if(title.value === '' || status.value === '' || description.value === '') {
                 alert('Fill in all the fields first!')
                 return
             }
             console.log(currentUser.createHomeTask(title.value, status.value, description.value))
-        } else {
+        } catch (error) {
             alert(`${currentUser.constructor.name}s don't have permission to create this type of task!`)
+            console.error(error)
         }
     } else {
         alert('You forgot to create user')
@@ -227,14 +224,15 @@ taskForm[2].addEventListener('submit', function(e) {
     var inputs = [title, status, description];
 
     if(currentUser !== undefined) {
-        if(currentUser.constructor.name === 'Developer') {
+        try {
             if(title.value === '' || status.value === '' || description.value === '') {
                 alert('Fill in all the fields first!')
                 return
             }
             console.log(currentUser.createProjcetTask(title.value, status.value, description.value, deadline.value))
-        } else {
+        } catch (error) {
             alert(`${currentUser.constructor.name}s don't have permission to create this type of task!`)
+            console.error(error)
         }
     } else {
         alert('You forgot to create user')
