@@ -211,8 +211,7 @@ textarea {
 
 .todos_output {
     width: 98%;
-    min-height: 250px;
-    margin: 0 auto 20px;
+    margin: 0 auto 100px;
 }
 
 .todo {

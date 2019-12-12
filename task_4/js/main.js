@@ -83,17 +83,20 @@ function Developer(name, surname, specialization, jobTitle) {
 //********** TASKS CONSTRUCTORS **********
 
 function SimpleTask(title, status) {
+    this.id = taskId;
     this.title = title;
     this.status = status;
 }
 
 function HomeTask(title, status, description) {
     SimpleTask.call(this, title, status)
+    this.id = taskId;
     this.description = description;
 }
 
 function ProjectTask(title, status, description, deadline) {
     HomeTask.call(this, title, status, description)
+    this.id = taskId;
     this.deadline = deadline;
 }
 
@@ -154,6 +157,8 @@ formUser.addEventListener('submit', function(e) {
 })
 
 // --------- CREATE SIMPLE TASK ---------
+var tasks = [];
+var taskId = 0
 
 taskForm[0].addEventListener('submit', function(e) {
     e.preventDefault()
@@ -168,6 +173,7 @@ taskForm[0].addEventListener('submit', function(e) {
                 alert('Fill in all the fields first!')
                 return
             }
+            taskId++
             console.log(currentUser.createSimpleTask(title.value, status.value))
         } catch (error) {
             alert(`${currentUser.constructor.name}s don't have permission to create this type of task!`)
@@ -198,6 +204,7 @@ taskForm[1].addEventListener('submit', function(e) {
                 alert('Fill in all the fields first!')
                 return
             }
+            taskId++
             console.log(currentUser.createHomeTask(title.value, status.value, description.value))
         } catch (error) {
             alert(`${currentUser.constructor.name}s don't have permission to create this type of task!`)
@@ -229,6 +236,7 @@ taskForm[2].addEventListener('submit', function(e) {
                 alert('Fill in all the fields first!')
                 return
             }
+            taskId++
             console.log(currentUser.createProjcetTask(title.value, status.value, description.value, deadline.value))
         } catch (error) {
             alert(`${currentUser.constructor.name}s don't have permission to create this type of task!`)
