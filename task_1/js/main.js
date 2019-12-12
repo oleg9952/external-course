@@ -35,10 +35,7 @@ function ProjectTask(title, status, description, deadline) {
 //********** METHODS **********
 
 Student.prototype = Object.create(User.prototype)
-Student.prototype.constructor = Student
-
 Developer.prototype = Object.create(Student.prototype)
-Developer.prototype.constructor = Developer
 
 User.prototype.createSimpleTask = function(title, status) {
     return new SimpleTask(title, status)

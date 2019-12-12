@@ -49,7 +49,7 @@ tabs.addEventListener('click', function(e) {
         tabItem[i].classList.remove('active')
         taskForm[i].classList.remove('active')
     }
-    
+
     if(e.target.innerText === 'Simple task') {
         e.target.classList.add('active')
         taskForm[0].classList.add('active')
@@ -80,25 +80,168 @@ function Developer(name, surname, specialization, jobTitle) {
     this.jobTitle = jobTitle;
 }
 
+//********** TASKS CONSTRUCTORS **********
+
+function SimpleTask(title, status) {
+    this.title = title;
+    this.status = status;
+}
+
+function HomeTask(title, status, description) {
+    SimpleTask.call(this, title, status)
+    this.description = description;
+}
+
+function ProjectTask(title, status, description, deadline) {
+    HomeTask.call(this, title, status, description)
+    this.deadline = deadline;
+}
+
+//********** METHODS **********
+
+Student.prototype = Object.create(User.prototype);
+Student.prototype.constructor = Student;
+
+Developer.prototype = Object.create(Student.prototype);
+Developer.prototype.constructor = Developer;
+
+User.prototype.createSimpleTask = function(title, status) {
+    return new SimpleTask(title, status);
+}
+
+Student.prototype.createHomeTask = function(title, status, description) {
+    return new HomeTask(title, status, description);
+}
+
+Developer.prototype.createProjcetTask = function(title, status, description, deadline) {
+    return new ProjectTask(title, status, description, deadline);
+}
+
 //********** EXECUTION **********
+// --------- CREATE USER ---------
+var currentUser;
 
 formUser.addEventListener('submit', function(e) {
     e.preventDefault();
     var type = userType.value;
-    var createdUser;
 
     if(type === 'user') {
-        createdUser = new User(userName.value, userSurname.value);
+        if(userName.value === '' || userSurname.value === '') {
+            alert('Fill in all the fields first!');
+            return
+        }
+        currentUser = new User(userName.value, userSurname.value);
     } else if(type === 'student') {
-        createdUser = new Student(userName.value, userSurname.value, specialization.value);
+        if(userName.value === '' || userSurname.value === '' || specialization.value === '') {
+            alert('Fill in all the fields first!');
+            return
+        }
+        currentUser = new Student(userName.value, userSurname.value, specialization.value);
         specialization.value = '';
     } else if(type === 'developer') {
-        createdUser = new Developer(userName.value, userSurname.value, specialization.value, jobTitle.value);
+        if(userName.value === '' || userSurname.value === '' || specialization.value === '' || jobTitle.value === '') {
+            alert('Fill in all the fields first!');
+            return
+        }
+        currentUser = new Developer(userName.value, userSurname.value, specialization.value, jobTitle.value);
         specialization.value = '';
         jobTitle.value = '';
     }
 
-    console.log(createdUser);
+    console.log(currentUser);
     userName.value = '';
     userSurname.value = '';
 })
+
+// --------- CREATE SIMPLE TASK ---------
+
+taskForm[0].addEventListener('submit', function(e) {
+    e.preventDefault()
+    var title = document.getElementById('title_simple');
+    var status = document.getElementById('status_simple');
+
+    var inputs = [title, status];
+
+    if(currentUser !== undefined) {
+        if(
+            currentUser.constructor.name === 'User' ||
+            currentUser.constructor.name === 'Student' ||
+            currentUser.constructor.name === 'Developer'
+        ) {
+            if(title.value === '' || status.value === '') {
+                alert('Fill in all the fields first!')
+                return
+            }
+            console.log(currentUser.createSimpleTask(title.value, status.value))
+        }
+    } else {
+        alert('You forgot to create user')
+    }
+
+    for(var i = 0; i < inputs.length; i++) {
+        inputs[i].value = ''
+    }
+})
+
+// --------- CREATE HOME TASK ---------
+
+taskForm[1].addEventListener('submit', function(e) {
+    e.preventDefault()
+    var title = document.getElementById('title_home');
+    var status = document.getElementById('status_home');
+    var description = document.getElementById('description_home');
+
+    var inputs = [title, status, description];
+
+    if(currentUser !== undefined) {
+        if(
+            currentUser.constructor.name === 'Student' ||
+            currentUser.constructor.name === 'Developer'
+        ) {
+            if(title.value === '' || status.value === '' || description.value === '') {
+                alert('Fill in all the fields first!')
+                return
+            }
+            console.log(currentUser.createHomeTask(title.value, status.value, description.value))
+        } else {
+            alert(`${currentUser.constructor.name}s don't have permission to create this type of task!`)
+        }
+    } else {
+        alert('You forgot to create user')
+    }
+
+    for(var i = 0; i < inputs.length; i++) {
+        inputs[i].value = ''
+    }
+})
+
+// --------- CREATE PROJECT TASK ---------
+
+taskForm[2].addEventListener('submit', function(e) {
+    e.preventDefault()
+    var title = document.getElementById('title_project');
+    var status = document.getElementById('status_project');
+    var description = document.getElementById('description_project');
+    var deadline = document.getElementById('deadline');
+    
+    var inputs = [title, status, description];
+
+    if(currentUser !== undefined) {
+        if(currentUser.constructor.name === 'Developer') {
+            if(title.value === '' || status.value === '' || description.value === '') {
+                alert('Fill in all the fields first!')
+                return
+            }
+            console.log(currentUser.createProjcetTask(title.value, status.value, description.value, deadline.value))
+        } else {
+            alert(`${currentUser.constructor.name}s don't have permission to create this type of task!`)
+        }
+    } else {
+        alert('You forgot to create user')
+    }
+
+    for(var i = 0; i < inputs.length; i++) {
+        inputs[i].value = ''
+    }
+})
+
