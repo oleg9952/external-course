@@ -154,6 +154,7 @@ formUser.addEventListener('submit', function(e) {
     console.log(currentUser);
     userName.value = '';
     userSurname.value = '';
+    document.querySelector('.user_status').classList.add('active')
 })
 
 //********** RENDER TODOS **********
@@ -173,8 +174,8 @@ function reRenderTodos() {
                 <div class="todo">
                     ${taskNumber} - type: simple; title: ${todo.title}; status: ${todo.status};
                     <div class="remove_todo" data-todo="${todo.id}">
-                        <div></div>
-                        <div></div>
+                        <div class="line" data-todo="${todo.id}"></div>
+                        <div class="line" data-todo="${todo.id}"></div>
                     </div>
                 </div> 
             `
@@ -184,8 +185,8 @@ function reRenderTodos() {
                 <div class="todo">
                     ${taskNumber} - type: home; title: ${todo.title}; status: ${todo.status}; description: ${todo.description};
                     <div class="remove_todo" data-todo="${todo.id}">
-                        <div></div>
-                        <div></div>
+                        <div class="line" data-todo="${todo.id}"></div>
+                        <div class="line" data-todo="${todo.id}"></div>
                     </div>
                 </div> 
             `
@@ -195,8 +196,8 @@ function reRenderTodos() {
                 <div class="todo">
                     ${taskNumber} - type: project; title: ${todo.title}; status: ${todo.status}; description: ${todo.description}; deadline: ${todo.deadline}
                     <div class="remove_todo" data-todo="${todo.id}">
-                        <div></div>
-                        <div></div>
+                        <div class="line" data-todo="${todo.id}"></div>
+                        <div class="line" data-todo="${todo.id}"></div>
                     </div>
                 </div> 
             `
@@ -319,7 +320,7 @@ taskForm[2].addEventListener('submit', function(e) {
 //********** REMOVE TODO **********
 
 todosOutput.addEventListener('click', function(e) {
-    if(e.target.className === 'remove_todo') {    
+    if(e.target.className === 'remove_todo' || e.target.className === 'line') {    
         for(let i = 0; i < tasks.length; i++) {
             if(tasks[i].id === Number(e.target.dataset.todo)) {
                 tasks.splice(i, 1)
