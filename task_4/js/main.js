@@ -156,9 +156,56 @@ formUser.addEventListener('submit', function(e) {
     userSurname.value = '';
 })
 
+//********** RENDER TODOS **********
+
+var todosOutput = document.querySelector('.todos_output');
+var tasks = []
+var taskId = 0;
+
+function reRenderTodos() {
+    console.log(tasks)
+    var taskNumber = 0;
+    todosOutput.innerHTML = '';
+    tasks.forEach(todo => {
+        if(todo.constructor.name === 'SimpleTask') {
+            taskNumber++
+            todosOutput.innerHTML += `
+                <div class="todo">
+                    ${taskNumber} - type: simple; title: ${todo.title}; status: ${todo.status};
+                    <div class="remove_todo" data-todo="${todo.id}">
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div> 
+            `
+        } else if(todo.constructor.name === 'HomeTask') {
+            taskNumber++
+            todosOutput.innerHTML += `
+                <div class="todo">
+                    ${taskNumber} - type: home; title: ${todo.title}; status: ${todo.status}; description: ${todo.description};
+                    <div class="remove_todo" data-todo="${todo.id}">
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div> 
+            `
+        } else if(todo.constructor.name === 'ProjectTask') {
+            taskNumber++
+            todosOutput.innerHTML += `
+                <div class="todo">
+                    ${taskNumber} - type: project; title: ${todo.title}; status: ${todo.status}; description: ${todo.description}; deadline: ${todo.deadline}
+                    <div class="remove_todo" data-todo="${todo.id}">
+                        <div></div>
+                        <div></div>
+                    </div>
+                </div> 
+            `
+        }
+    })
+}
+
 // --------- CREATE SIMPLE TASK ---------
-var tasks = [];
-var taskId = 0
+
 
 taskForm[0].addEventListener('submit', function(e) {
     e.preventDefault()
@@ -167,14 +214,20 @@ taskForm[0].addEventListener('submit', function(e) {
 
     var inputs = [title, status];
 
+    if(title.value === '' || status.value === '') {
+        alert('Fill in all the fields first!')
+        return
+    }
+
     if(currentUser !== undefined) {
         try {
-            if(title.value === '' || status.value === '') {
-                alert('Fill in all the fields first!')
-                return
+            if(tasks.length !== 0) {
+                taskId = tasks[tasks.length - 1].id + 1
+            } else {
+                taskId++
             }
-            taskId++
-            console.log(currentUser.createSimpleTask(title.value, status.value))
+            tasks.push(currentUser.createSimpleTask(title.value, status.value)); 
+            reRenderTodos() 
         } catch (error) {
             alert(`${currentUser.constructor.name}s don't have permission to create this type of task!`)
             console.error(error)
@@ -198,14 +251,20 @@ taskForm[1].addEventListener('submit', function(e) {
 
     var inputs = [title, status, description];
 
+    if(title.value === '' || status.value === '' || description.value === '') {
+        alert('Fill in all the fields first!')
+        return
+    }
+
     if(currentUser !== undefined) {
         try {
-            if(title.value === '' || status.value === '' || description.value === '') {
-                alert('Fill in all the fields first!')
-                return
+            if(tasks.length !== 0) {
+                taskId = tasks[tasks.length - 1].id + 1
+            } else {
+                taskId++
             }
-            taskId++
-            console.log(currentUser.createHomeTask(title.value, status.value, description.value))
+            tasks.push(currentUser.createHomeTask(title.value, status.value, description.value))
+            reRenderTodos()
         } catch (error) {
             alert(`${currentUser.constructor.name}s don't have permission to create this type of task!`)
             console.error(error)
@@ -230,14 +289,20 @@ taskForm[2].addEventListener('submit', function(e) {
     
     var inputs = [title, status, description];
 
+    if(title.value === '' || status.value === '' || description.value === '') {
+        alert('Fill in all the fields first!')
+        return
+    }
+
     if(currentUser !== undefined) {
         try {
-            if(title.value === '' || status.value === '' || description.value === '') {
-                alert('Fill in all the fields first!')
-                return
+            if(tasks.length !== 0) {
+                taskId = tasks[tasks.length - 1].id + 1
+            } else {
+                taskId++
             }
-            taskId++
-            console.log(currentUser.createProjcetTask(title.value, status.value, description.value, deadline.value))
+            tasks.push(currentUser.createProjcetTask(title.value, status.value, description.value, deadline.value))
+            reRenderTodos()
         } catch (error) {
             alert(`${currentUser.constructor.name}s don't have permission to create this type of task!`)
             console.error(error)
@@ -251,3 +316,15 @@ taskForm[2].addEventListener('submit', function(e) {
     }
 })
 
+//********** REMOVE TODO **********
+
+todosOutput.addEventListener('click', function(e) {
+    if(e.target.className === 'remove_todo') {    
+        for(let i = 0; i < tasks.length; i++) {
+            if(tasks[i].id === Number(e.target.dataset.todo)) {
+                tasks.splice(i, 1)
+            }
+        }
+        reRenderTodos()
+    }    
+})

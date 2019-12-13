@@ -11,6 +11,7 @@ body {
 .wrapper {
     min-height: 100vh;
     padding-top: 15px;
+    padding-bottom: 130px;
 }
 
 header {
@@ -210,8 +211,8 @@ textarea {
 /*********** TODOS ***********/
 
 .todos_output {
-    width: 98%;
-    margin: 0 auto 100px;
+    width: 95%;
+    margin: 0 auto 0;
 }
 
 .todo {
@@ -262,7 +263,7 @@ footer {
     border-radius: 10px;
     background-color: #fff;
     border: 3px solid #7e7e7e;
-    margin: -80px auto 10px auto;
+    margin: -110px auto 10px auto;
     padding-left: 20px;
     display: flex;
     align-items: center;
