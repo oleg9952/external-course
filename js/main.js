@@ -132,6 +132,68 @@ const saveToFile = (fileName, data) => {
     document.body.removeChild(element);
 }
 
+let displayTimer
+const renderTable = () => {
+    output.innerHTML = ''
+    // animation delay counter
+    let animDelay = 0
+    // render all tickets 
+    tickets.forEach(ticket => {
+        // increment delay
+        animDelay += 40
+        output.innerHTML += `
+            <tr class="ticket ${ticket.departureToday ? 'bg-info' : ''}"
+                style="animation-delay: ${animDelay}ms"
+            >
+                <td>${ticket.trainNumber}${ticket.trainLetter}</td>
+                <td>${ticket.cityA}</td>
+                <td>${ticket.cityB}</td>
+                <td>${ticket.departureDayOfWeek}</td>
+                <td class="timer">...</td>
+                <td>${ticket.departureDay} <br> ${ticket.departureTime} </td>
+                <td>${ticket.arrivalDay} <br> ${ticket.arrivalTime}</td>
+                <td>${ticket.ticketPriceFormated}</td>
+            </tr>
+        `
+    })
+
+    //*********** TIMER ***********
+    
+    let timerOutput = Array.from(document.getElementsByClassName('timer'))
+    // reset timer
+    clearInterval(displayTimer)
+    // start timer
+    displayTimer = setInterval(() => {
+        tickets.forEach((item, index) => {
+            timerOutput[index].innerText = item.timer()
+        })
+    }, 1000)
+}
+
+let sortDescending = selector => {
+    return (a, b) => {
+        if ( a[selector] < b[selector] ){
+          return -1;
+        }
+        if ( a[selector] > b[selector] ){
+          return 1;
+        }
+        return 0;
+    }
+}
+
+let sortAscending = selector => {
+    return (a, b) => {
+        if (a[selector] > b[selector]) {
+          return -1;
+        }
+        if (a[selector] < b[selector]) {
+          return 1;
+        }
+        return 0;
+    }
+}
+
 //-------------- OBJECT --------------
 
 class Destination {
@@ -343,237 +405,27 @@ modalBtns.addEventListener('click', e => {
 
 // sorting
 tableHead.addEventListener('click', e => {
-    let compare
-
     if(e.target.id === 'by_number') {
         e.target.classList.toggle('reverse')
-
-        if(e.target.className === 'reverse') {
-            compare = ( a, b ) => {
-                if ( a.trainNumber < b.trainNumber ){
-                  return -1;
-                }
-                if ( a.trainNumber > b.trainNumber ){
-                  return 1;
-                }
-                return 0;
-            }
-        } else {
-            compare = ( a, b ) => {
-                if ( a.trainNumber > b.trainNumber ){
-                  return -1;
-                }
-                if ( a.trainNumber < b.trainNumber ){
-                  return 1;
-                }
-                return 0;
-            }
-        }
-        
-        tickets.sort(compare)
-
-        
+        e.target.className === 'reverse' ? tickets.sort(sortDescending('trainNumber')) : tickets.sort(sortAscending('trainNumber'))
     } else if(e.target.id === 'by_dep-city') {
         e.target.classList.toggle('reverse')
-        
-        if(e.target.className === 'reverse') {
-            compare = ( a, b ) => {
-                if ( a.cityA < b.cityA ){
-                  return -1;
-                }
-                if ( a.cityA > b.cityA ){
-                  return 1;
-                }
-                return 0;
-            }
-        } else {
-            compare = ( a, b ) => {
-                if ( a.cityA > b.cityA ){
-                  return -1;
-                }
-                if ( a.cityA < b.cityA ){
-                  return 1;
-                }
-                return 0;
-            }
-        }
-        
-        tickets.sort(compare)
-        
+        e.target.className === 'reverse' ? tickets.sort(sortDescending('cityA')) : tickets.sort(sortAscending('cityA'))
     } else if(e.target.id === 'by_arr-city') {
         e.target.classList.toggle('reverse')
-
-        if(e.target.className === 'reverse') {
-            compare = ( a, b ) => {
-                if ( a.cityB < b.cityB ){
-                  return -1;
-                }
-                if ( a.cityB > b.cityB ){
-                  return 1;
-                }
-                return 0;
-            }
-        } else {
-            compare = ( a, b ) => {
-                if ( a.cityB > b.cityB ){
-                  return -1;
-                }
-                if ( a.cityB < b.cityB ){
-                  return 1;
-                }
-                return 0;
-            }
-        }
-        
-        tickets.sort(compare)
+        e.target.className === 'reverse' ? tickets.sort(sortDescending('cityB')) : tickets.sort(sortAscending('cityB'))
     } else if(e.target.id === 'by_day') {
-
         e.target.classList.toggle('reverse')
-
-        if(e.target.className === 'reverse') {
-            compare = ( a, b ) => {
-                if ( a.departureDayOfWeek < b.departureDayOfWeek ){
-                  return -1;
-                }
-                if ( a.departureDayOfWeek > b.departureDayOfWeek ){
-                  return 1;
-                }
-                return 0;
-            }
-        } else {
-            compare = ( a, b ) => {
-                if ( a.departureDayOfWeek > b.departureDayOfWeek ){
-                  return -1;
-                }
-                if ( a.departureDayOfWeek < b.departureDayOfWeek ){
-                  return 1;
-                }
-                return 0;
-            }
-        }
-        
-        tickets.sort(compare)
-
+        e.target.className === 'reverse' ? tickets.sort(sortDescending('departureDayOfWeek')) : tickets.sort(sortAscending('departureDayOfWeek'))
     } else if(e.target.id === 'by_dep-timer' || e.target.id === 'by_dep_time') {
         e.target.classList.toggle('reverse')
-
-        if(e.target.className === 'reverse') {
-            compare = ( a, b ) => {
-                if ( a.departureMilliseconds < b.departureMilliseconds ){
-                  return -1;
-                }
-                if ( a.departureMilliseconds > b.departureMilliseconds ){
-                  return 1;
-                }
-                return 0;
-            }
-        } else {
-            compare = ( a, b ) => {
-                if ( a.departureMilliseconds > b.departureMilliseconds ){
-                  return -1;
-                }
-                if ( a.departureMilliseconds < b.departureMilliseconds ){
-                  return 1;
-                }
-                return 0;
-            }
-        }
-        
-        tickets.sort(compare)
+        e.target.className === 'reverse' ? tickets.sort(sortDescending('departureMilliseconds')) : tickets.sort(sortAscending('departureMilliseconds'))
     } else if(e.target.id === 'by_arr-day') {
         e.target.classList.toggle('reverse')
-
-        if(e.target.className === 'reverse') {
-            compare = ( a, b ) => {
-                if ( a.arrivalMiliseconds < b.arrivalMiliseconds ){
-                  return -1;
-                }
-                if ( a.arrivalMiliseconds > b.arrivalMiliseconds ){
-                  return 1;
-                }
-                return 0;
-            }
-        } else {
-            compare = ( a, b ) => {
-                if ( a.arrivalMiliseconds > b.arrivalMiliseconds ){
-                  return -1;
-                }
-                if ( a.arrivalMiliseconds < b.arrivalMiliseconds ){
-                  return 1;
-                }
-                return 0;
-            }
-        }
-        
-        tickets.sort(compare)
+        e.target.className === 'reverse' ? tickets.sort(sortDescending('arrivalMiliseconds')) : tickets.sort(sortAscending('arrivalMiliseconds'))
     } else if(e.target.id === 'by_price') {
         e.target.classList.toggle('reverse')
-
-        if(e.target.className === 'reverse') {
-            compare = ( a, b ) => {
-                if ( a.ticketPrice < b.ticketPrice ){
-                  return -1;
-                }
-                if ( a.ticketPrice > b.ticketPrice ){
-                  return 1;
-                }
-                return 0;
-            }
-        } else {
-            compare = ( a, b ) => {
-                if ( a.ticketPrice > b.ticketPrice ){
-                  return -1;
-                }
-                if ( a.ticketPrice < b.ticketPrice ){
-                  return 1;
-                }
-                return 0;
-            }
-        }
-        
-        tickets.sort(compare)
-        
+        e.target.className === 'reverse' ? tickets.sort(sortDescending('ticketPrice')) : tickets.sort(sortAscending('ticketPrice'))        
     }
-
     renderTable()
 }) 
-
-
-let displayTimer
-
-const renderTable = () => {
-    output.innerHTML = ''
-    // animation delay counter
-    let animDelay = 0
-    // render all tickets 
-    tickets.forEach(ticket => {
-        // increment delay
-        animDelay += 40
-        output.innerHTML += `
-            <tr class="ticket ${ticket.departureToday ? 'bg-info' : ''}"
-                style="animation-delay: ${animDelay}ms"
-            >
-                <td>${ticket.trainNumber}${ticket.trainLetter}</td>
-                <td>${ticket.cityA}</td>
-                <td>${ticket.cityB}</td>
-                <td>${ticket.departureDayOfWeek}</td>
-                <td class="timer">...</td>
-                <td>${ticket.departureDay} <br> ${ticket.departureTime} </td>
-                <td>${ticket.arrivalDay} <br> ${ticket.arrivalTime}</td>
-                <td>${ticket.ticketPriceFormated}</td>
-            </tr>
-        `
-    })
-
-    //*********** TIMER ***********
-    
-    let timerOutput = Array.from(document.getElementsByClassName('timer'))
-    // reset timer
-    clearInterval(displayTimer)
-    // start timer
-    displayTimer = setInterval(() => {
-        tickets.forEach((item, index) => {
-            timerOutput[index].innerText = item.timer()
-        })
-    }, 1000)
-}

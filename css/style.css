@@ -20,6 +20,13 @@ body {
     margin: 0 10px;
 }
 
+.table-head th {
+  cursor: pointer;
+}
+.table-head th:hover {
+  background-color: #575e67;
+}
+
 /* ------------ TABLE ANIMATION ------------ */
 
 .table {
