@@ -27,6 +27,42 @@ body {
   background-color: #575e67;
 }
 
+/* ------------ SEARCH ------------ */
+
+.search_holder {
+  width: 550px;
+  height: 40px;
+  background-color: #fff;
+  margin: 0 auto 10px;
+  border-radius: 30px;
+  /* visibility: hidden; */
+  display: grid;
+  grid-template-columns: 1fr 150px 70px;
+  overflow: hidden;
+}
+
+.search_holder input {
+  outline: none;
+  border: none;
+  padding: 0 15px;
+}
+.search_holder select {
+  outline: none;
+  border: none;
+  background-color: #fff;
+}
+.search_holder button {
+  outline: none;
+  border: none;
+  color: #000;
+  font-size: 24px;
+  transition: .3s;
+  cursor: pointer;
+}
+.search_holder button:hover {
+  color: #007bff;
+}
+
 /* ------------ TABLE ANIMATION ------------ */
 
 .table {

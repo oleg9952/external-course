@@ -11,6 +11,10 @@ const languageToggle = document.querySelector('#language')
 const table = document.querySelector('.table')
 const tableHead = document.querySelector('.table-head')
 
+const search = document.querySelector('.search_holder')
+const searchInput = document.querySelector('#search_input')
+const searchCategory = document.querySelector('#search_category')
+
 //-------------- LANGUAGE --------------
 
 //set default checkbox state
@@ -145,9 +149,15 @@ const renderTable = () => {
             <tr class="ticket ${ticket.departureToday ? 'bg-info' : ''}"
                 style="animation-delay: ${animDelay}ms"
             >
-                <td>${ticket.trainNumber}${ticket.trainLetter}</td>
-                <td>${ticket.cityA}</td>
-                <td>${ticket.cityB}</td>
+                <td
+                    class="${ticket.trainNumberSearch ? 'bg-warning' : ''}"
+                >${ticket.trainNumber}${ticket.trainLetter}</td>
+                <td
+                    class="${ticket.departureSearch ? 'bg-warning' : ''}"
+                >${ticket.cityA}</td>
+                <td
+                    class="${ticket.arrivalSearch ? 'bg-warning' : ''}"
+                >${ticket.cityB}</td>
                 <td>${ticket.departureDayOfWeek}</td>
                 <td class="timer">...</td>
                 <td>${ticket.departureDay} <br> ${ticket.departureTime} </td>
@@ -270,7 +280,13 @@ class Destination {
                         'Завтра' : this.departureToday && today === this.trainsDayTime.get('day') ?
                         'Сьогодні' : daysOfWeek.uk[this.trainsDayTime.get('day')] 
         this.arrivalMiliseconds = this.trainsDayTime.unix()
+        
+        //*********** SEARCH ***********
+        this.trainNumberSearch = false
+        this.departureSearch = false
+        this.arrivalSearch = false
     }
+        
     // display remaining time till departure
     timer() {
         this.durationTime = moment.duration(this.durationTime - 1000, 'milliseconds')
@@ -429,3 +445,49 @@ tableHead.addEventListener('click', e => {
     }
     renderTable()
 }) 
+
+
+// searching
+search.addEventListener('submit', e => {
+    e.preventDefault()
+    let category = searchCategory.value
+
+    let searchKeys = [
+        'trainNumberSearch',
+        'departureSearch',
+        'arrivalSearch'
+    ]
+
+    let searchValue = searchInput.value
+    searchValue.toString()
+
+    let searchRegExp = new RegExp(/searchValue/)
+
+    tickets.forEach(item => {
+
+        searchKeys.forEach(key => item[key] = false)
+
+        if(category === 'trainNumber') {
+            if(item[category] === parseInt(searchInput.value)) {
+                item.trainNumberSearch = true
+            } else {
+                item.trainNumberSearch = false
+            }
+        } else if(category === 'cityA') {
+            if(item[category].toLowerCase().search(/s/i) != -1) {
+                item.departureSearch = true
+            } else {
+                item.departureSearch = false
+            }
+        } else if(category === 'cityB') {
+            if(item[category] === searchInput.value) {
+                item.arrivalSearch = true
+            } else {
+                item.arrivalSearch = false
+            }
+        }
+    })
+
+    renderTable()
+    searchInput.value = ''
+})
