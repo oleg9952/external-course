@@ -158,10 +158,14 @@ const renderTable = () => {
                 <td
                     class="${ticket.arrivalSearch ? 'bg-warning' : ''}"
                 >${ticket.cityB}</td>
-                <td>${ticket.departureDayOfWeek}</td>
+                <td
+                    class="${ticket.departureDaySearch ? 'bg-warning' : ''}"
+                >${ticket.departureDayOfWeek}</td>
                 <td class="timer">...</td>
                 <td>${ticket.departureDay} <br> ${ticket.departureTime} </td>
-                <td>${ticket.arrivalDay} <br> ${ticket.arrivalTime}</td>
+                <td
+                    class="${ticket.arivalDaySearch ? 'bg-warning' : ''}"
+                >${ticket.arrivalDay} <br> ${ticket.arrivalTime}</td>
                 <td>${ticket.ticketPriceFormated}</td>
             </tr>
         `
@@ -285,6 +289,8 @@ class Destination {
         this.trainNumberSearch = false
         this.departureSearch = false
         this.arrivalSearch = false
+        this.departureDaySearch = false
+        this.arivalDaySearch = false
     }
         
     // display remaining time till departure
@@ -451,42 +457,52 @@ tableHead.addEventListener('click', e => {
 search.addEventListener('submit', e => {
     e.preventDefault()
     let category = searchCategory.value
+    let searchValue = searchInput.value
 
     let searchKeys = [
         'trainNumberSearch',
         'departureSearch',
-        'arrivalSearch'
+        'arrivalSearch',
+        'departureDaySearch',
+        'arivalDaySearch'
     ]
 
-    let searchValue = searchInput.value
-    searchValue.toString()
+    let patt = new RegExp(searchValue.toLowerCase())
 
-    let searchRegExp = new RegExp(/searchValue/)
-
-    tickets.forEach(item => {
-
-        searchKeys.forEach(key => item[key] = false)
-
-        if(category === 'trainNumber') {
-            if(item[category] === parseInt(searchInput.value)) {
-                item.trainNumberSearch = true
-            } else {
-                item.trainNumberSearch = false
-            }
-        } else if(category === 'cityA') {
-            if(item[category].toLowerCase().search(/s/i) != -1) {
-                item.departureSearch = true
-            } else {
-                item.departureSearch = false
-            }
-        } else if(category === 'cityB') {
-            if(item[category] === searchInput.value) {
-                item.arrivalSearch = true
-            } else {
-                item.arrivalSearch = false
-            }
+    if(tickets.length !== 0) {
+        if(searchValue.length === 0) {
+            alert('You forgot to enter your search...')
+            return
         }
-    })
+        tickets.forEach(item => {
+            searchKeys.forEach(key => item[key] = false)
+            if(category === 'trainNumber') {
+                if(patt.test(item[category])) {
+                    item.trainNumberSearch = true
+                }
+            } else if(category === 'cityA') {
+                if(patt.test(item[category].toLowerCase())) {
+                    item.departureSearch = true
+                }
+            } else if(category === 'cityB') {
+                if(patt.test(item[category].toLowerCase())) {
+                    item.arrivalSearch = true
+                } 
+            } else if(category === 'departureDayOfWeek') {
+                if(patt.test(item[category].toLowerCase())) {
+                    item.departureDaySearch = true
+                } 
+            } else if(category === 'arrivalDay') {
+                if(patt.test(item[category].toLowerCase())) {
+                    item.arivalDaySearch = true
+                } 
+            }
+        })
+    } else {
+        alert('Generate the schedule first!')
+    }
+
+    
 
     renderTable()
     searchInput.value = ''
