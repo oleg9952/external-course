@@ -246,15 +246,11 @@ const generateTable = (nOfTrains) => {
     } else {
         tableHead.innerHTML = languageHead.en
     }
-    // animation delay counter
-    let animDelay = 0
     // render all tickets 
     tickets.forEach(ticket => {
-        // increment delay
-        animDelay += 40
         output.innerHTML += `
             <tr class="ticket ${ticket.departureToday ? 'bg-info' : ''}"
-                style="animation-delay: ${animDelay}ms"
+            
             >
                 <td>${ticket.trainNumber}${ticket.trainLetter}</td>
                 <td>${ticket.cityA}</td>
@@ -284,6 +280,9 @@ const generateTable = (nOfTrains) => {
 
     // show table
     table.classList.add('active')
+
+    
+    $('#scheduleTable').tablesorter();
 }
 
 // emulating server request
@@ -374,4 +373,3 @@ modalBtns.addEventListener('click', e => {
     }
     userInput.value = null
 })
-
