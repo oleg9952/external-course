@@ -20,6 +20,22 @@ body {
     margin: 0 10px;
 }
 
+.dateSorter {
+  border: 1px solid #fff;
+  width: 300px;
+  margin: 0 auto;
+  height: 40px;
+  display: grid;
+  grid-template-columns: 1fr 70px;
+}
+.dateSorter input {
+  outline: none;
+  padding: 0 15px;
+}
+.dateSorter button {
+  outline: none;
+}
+
 /* ------------ TABLE ANIMATION ------------ */
 
 .table {

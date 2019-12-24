@@ -132,6 +132,45 @@ const saveToFile = (fileName, data) => {
     document.body.removeChild(element);
 }
 
+const initTableSorter = () => $('#scheduleTable').tablesorter();
+
+const renderTable = (tickets) => {
+    output.innerHTML = ''
+    // render all tickets 
+    tickets.forEach(ticket => {
+        output.innerHTML += `
+            <tr class="ticket ${ticket.departureToday ? 'bg-info' : ''}"
+            
+            >
+                <td>${ticket.trainNumber}${ticket.trainLetter}</td>
+                <td>${ticket.cityA}</td>
+                <td>${ticket.cityB}</td>
+                <td>${ticket.departureDayOfWeek}</td>
+                <td class="timer">...</td>
+                <td>${ticket.departureDay} <br> ${ticket.departureTime} </td>
+                <td>${ticket.arrivalDay} <br> ${ticket.arrivalTime}</td>
+                <td>${ticket.ticketPriceFormated}</td>
+            </tr>
+        `
+    })
+
+    //*********** TIMER ***********
+    
+    let timerOutput = Array.from(document.getElementsByClassName('timer'))
+    // reset timer
+    clearInterval(displayTimer)
+    // start timer
+    displayTimer = setInterval(() => {
+        tickets.forEach((item, index) => {
+            timerOutput[index].innerText = item.timer()
+        })
+    }, 1000)
+
+    // jQuery sorting plugin
+    initTableSorter()
+}
+
+
 //-------------- OBJECT --------------
 
 class Destination {
@@ -246,43 +285,13 @@ const generateTable = (nOfTrains) => {
     } else {
         tableHead.innerHTML = languageHead.en
     }
-    // render all tickets 
-    tickets.forEach(ticket => {
-        output.innerHTML += `
-            <tr class="ticket ${ticket.departureToday ? 'bg-info' : ''}"
-            
-            >
-                <td>${ticket.trainNumber}${ticket.trainLetter}</td>
-                <td>${ticket.cityA}</td>
-                <td>${ticket.cityB}</td>
-                <td>${ticket.departureDayOfWeek}</td>
-                <td class="timer">...</td>
-                <td>${ticket.departureDay} <br> ${ticket.departureTime} </td>
-                <td>${ticket.arrivalDay} <br> ${ticket.arrivalTime}</td>
-                <td>${ticket.ticketPriceFormated}</td>
-            </tr>
-        `
-    })
-
-    //*********** TIMER ***********
     
-    let timerOutput = Array.from(document.getElementsByClassName('timer'))
-    // reset timer
-    clearInterval(displayTimer)
-    // start timer
-    displayTimer = setInterval(() => {
-        tickets.forEach((item, index) => {
-            timerOutput[index].innerText = item.timer()
-        })
-    }, 1000)
+    renderTable(tickets)
 
     //**********************
 
     // show table
-    table.classList.add('active')
-
-    
-    $('#scheduleTable').tablesorter();
+    table.classList.add('active')    
 }
 
 // emulating server request
@@ -372,4 +381,27 @@ modalBtns.addEventListener('click', e => {
         }  
     }
     userInput.value = null
+})
+
+
+// filter by date jQuery
+let selectedDate = $('#datepicker').datepicker()
+// selectedDate.datepicker()
+$('.dateSorter').submit((e) => {
+    e.preventDefault()
+    output.innerHTML = ''
+    let day = new Date(selectedDate.val()).getDay()
+
+    if(tickets.length !== 0) {
+        if(selectedDate.val().length === 0) {
+            alert('Select date first!')
+            return
+        }
+        let filteredTickets = tickets.filter(ticket => ticket.setDepartureDay === day)
+        renderTable(filteredTickets)
+        
+    } else {
+        alert('Click "Run" to get schedule first!')
+    }
+    
 })

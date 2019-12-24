@@ -7,6 +7,9 @@
     <title>Schedule Generator</title>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.0/css/bootstrap.min.css" integrity="sha384-SI27wrMjH3ZZ89r4o+fGIJtnzkAnFs3E4qz9DIYioCQ5l9Rd/7UAa8DHcaL8jkWt" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
     <link rel="stylesheet" href="./css/style.css">
 </head>
 <body>
@@ -21,6 +24,11 @@
             >Run</button>
             <button disabled type="button" id="save" class="btn btn-success">Save</button>
         </div>
+
+        <form class="dateSorter">
+            <input type="text" id="datepicker">
+            <button type="submit" class="btn btn-info">Filter</button>
+        </form>
 
         <!-- Schedule -->
         <table class="table table-striped table-dark table-hover" id="scheduleTable">
@@ -80,7 +88,10 @@
     <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
     <script src="./js/moment.js"></script>
 
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    
     <script src="./js/jquery.tablesorter.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 
     <script src="./js/main.js"></script>
 </body>
