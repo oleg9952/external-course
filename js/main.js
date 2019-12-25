@@ -133,16 +133,15 @@ const saveToFile = (fileName, data) => {
 }
 
 const initTableSorter = () => $('#scheduleTable').tablesorter();
+const initToolTip = () => $(document).tooltip({track: true});
 
 const renderTable = (tickets) => {
     output.innerHTML = ''
     // render all tickets 
     tickets.forEach(ticket => {
         output.innerHTML += `
-            <tr class="ticket ${ticket.departureToday ? 'bg-info' : ''}"
-            
-            >
-                <td>${ticket.trainNumber}${ticket.trainLetter}</td>
+            <tr class="ticket ${ticket.departureToday ? 'bg-info' : ''}">
+                <td title="${ticket.trainType}">${ticket.trainNumber}${ticket.trainLetter}</td>
                 <td>${ticket.cityA}</td>
                 <td>${ticket.cityB}</td>
                 <td>${ticket.departureDayOfWeek}</td>
@@ -166,8 +165,9 @@ const renderTable = (tickets) => {
         })
     }, 1000)
 
-    // jQuery sorting plugin
+    // jQuery sorting && tooltop plugins
     initTableSorter()
+    initToolTip()
 }
 
 
@@ -184,8 +184,9 @@ class Destination {
         this.engTest = this.currentLanguage === 'uk' ? true : false
 
         //*********** TRAIN N && L ***********
-        this.trainNumber = getRandomNum(150, 100)
+        this.trainNumber = getRandomNum(600, 450)
         this.trainLetter = letters[getRandomItem(letters)]
+        this.trainType = this.currentLanguage !== 'uk' ? (this.trainNumber < 500 ? 'Regular' : 'Premium') : (this.trainNumber < 500 ? 'Звичайний' : 'Фірмовий')
 
         //*********** DEPARTURE CITY ***********
         this.cityASelector = this.currentLanguage !== 'uk' ? getRandomItem(cities.en) : getRandomItem(cities.uk)
